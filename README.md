@@ -1,6 +1,6 @@
-# [robertgzr/caddy](https://hub.docker/r/robertgzr/caddy)
+# [robertgzr/caddy](https://hub.docker.com/r/robertgzr/caddy)
 
-Caddy build with the following plugins:
+includes the following plugins:
 
 * github.com/emersion/caddy-wkd
 * github.com/caddyserver/forwardproxy
