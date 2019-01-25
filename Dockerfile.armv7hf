@@ -1,7 +1,9 @@
 # vim: ft=dockerfile
 ARG CADDY_VERSION=HEAD
 
-FROM docker.io/library/alpine:1.11 as build
+FROM docker.io/balenalib/armv7hf-alpine-golang:1.11-run as build
+
+RUN [ "cross-build-start" ]
 
 # get dependencies
 RUN apk add git && \
@@ -33,8 +35,19 @@ RUN go run build.go && \
 # get certs for deployment
 RUN apk add ca-certificates
 
+RUN [ "cross-build-end" ]
+
 # put binary and certs into scratch container
 FROM scratch
+# or:
+# put the binary into a minimal alpine container
+# FROM docker.io/balenalib/$ARCH-alpine:run
+
+# RUN [ "cross-build-start" ]
+
+# install additional pkgs
+
+# RUN [ "cross-build-end" ]
 
 COPY --from=build /out/caddy /bin/caddy
 COPY Caddyfile.default /etc/Caddyfile

@@ -1,0 +1,13 @@
+language: minimal
+
+services: 
+  - docker
+
+script:
+  - make build
+
+deploy:
+  provider: script
+  script: make push
+  on:
+    branch: master

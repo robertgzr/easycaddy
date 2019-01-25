@@ -1,0 +1,11 @@
+image: docker.io/robertgzr/caddy:%%VERSION%%
+manifests:
+  - image: docker.io/robertgzr/caddy:%%VERSION%%-amd64
+    platform:
+      architecture: amd64
+      os: linux
+  - image: docker.io/robertgzr/caddy:%%VERSION%%-armv7hf
+    platform:
+      architecture: arm
+      variant: v7
+      os: linux
