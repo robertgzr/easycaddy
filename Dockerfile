@@ -1,7 +1,7 @@
 # vim: ft=dockerfile
 ARG CADDY_VERSION=HEAD
 
-FROM docker.io/library/alpine:1.11 as build
+FROM docker.io/library/golang:1.11-alpine as build
 
 # get dependencies
 RUN apk add git && \

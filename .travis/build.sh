@@ -31,7 +31,7 @@ $B -t robertgzr/caddy:$TAG \
 
 TAG="${CADDY_VERSION}-armv7hf"
 $B -t robertgzr/caddy:$TAG \
-    --file Dockerfile.armhf \
+    --file Dockerfile.armv7hf \
     --build-arg CADDY_VERSION=$CADDY_VERSION \
     --build-arg GOARCH=arm --build-arg GOARM=7 \
     .
