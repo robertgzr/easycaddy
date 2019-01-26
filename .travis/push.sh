@@ -3,6 +3,7 @@
 MANIFEST_TOOL_VERSION='v0.9.0'
 curl -sSfL https://github.com/estesp/manifest-tool/releases/download/$MANIFEST_TOOL_VERSION/manifest-tool-linux-amd64 \
     -o manifest-tool
+chmod +x ./manifest-tool
 
 manifest_push() {
     local version=$2
