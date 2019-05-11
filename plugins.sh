@@ -30,4 +30,5 @@ for p in $plugs; do
 done
 
 set -x
-goimport -w $flags run.go
+
+goimport -w -force $flags "$1"

@@ -13,14 +13,12 @@ RUN git clone https://github.com/mholt/caddy.git . && \
     git checkout -f $CADDY_VERSION
 
 # disable telemetry
-WORKDIR $GOPATH/src/github.com/mholt/caddy/caddy/caddymain
-RUN sed -i -e 's|var EnableTelemetry.*|var EnableTelemetry = false|' run.go
+RUN sed -i -e 's|var EnableTelemetry.*|var EnableTelemetry = false|' ./caddy/caddymain/run.go
 
 # install caddy 3rd party plugins
 COPY plugins.sh /
-RUN /plugins.sh
+RUN /plugins.sh ./caddy/caddymain/run.go
 
-WORKDIR $GOPATH/src/github.com/mholt/caddy/caddy
 # force static build
 RUN go build -a -tags "netgo" -ldflags "-s -X main.AppName=caddy -X main.AppVersion=$CADDY_VERSION" && \
     install -Dm00755 caddy /out/caddy
