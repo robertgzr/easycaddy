@@ -3,11 +3,24 @@ language: minimal
 services: 
   - docker
 
-script:
-  - make build
+stages:
+  - build
+  - name: push
+    if: branch = master
 
-deploy:
-  provider: script
-  script: make push
-  on:
-    branch: master
+jobs:
+  include:
+    - stage: build
+      name: "build for amd64"
+      script:
+        - make build.amd64
+
+    - stage: build
+      name: "build for armv7hf"
+      script:
+        - make build.armv7hf
+
+    - stage: push
+      name: "push to docker.io"
+      script:
+        - make push

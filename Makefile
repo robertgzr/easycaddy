@@ -2,10 +2,15 @@ VERSION ?= v1.0.0
 
 all: push
 
-build:
-	env CADDY_VERSION=$(VERSION) .travis/build.sh
+build: build.amd64 build.armv7hf
 
-push: build
+build.amd64:
+	env CADDY_VERSION=$(VERSION) .travis/build.sh amd64
+
+build.armv7hf:
+	env CADDY_VERSION=$(VERSION) .travis/build.sh armv7hf
+
+push:
 	env CADDY_VERSION=$(VERSION) .travis/push.sh
 
-.PHONY: build push
+.PHONY: build build.amd64 build.armv7hf push
