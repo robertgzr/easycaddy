@@ -1,19 +1,17 @@
 #!/bin/bash
 
-B=
+set -e
 
 if [[ ! `uname -m` == "x86_64" ]]; then
     echo "not building on x86_64, this won't work then..."
     exit 1
 fi
 
+B=
 if [[ $B == "" && `command -v buildah` ]]; then
     B="buildah bud"
 else
     echo "buildah not found, trying docker..."
-fi
-
-if [[ $B == "" ]]; then 
     if command -v docker; then
         B="docker build"
     else
@@ -21,6 +19,8 @@ if [[ $B == "" ]]; then
         exit 1
     fi
 fi
+
+set -x
 
 TAG="${CADDY_VERSION}-amd64"
 $B -t robertgzr/caddy:$TAG \
