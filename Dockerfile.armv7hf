@@ -1,36 +1,33 @@
 # vim: ft=dockerfile
-ARG CADDY_VERSION=HEAD
 
 FROM docker.io/balenalib/armv7hf-alpine-golang:1.12-run as build
 
 RUN [ "cross-build-start" ]
 
+ENV GO111MODULE=on
+
 # get dependencies
 RUN apk add git && \
     go get -u arp242.net/goimport
 
-# get sources
-RUN go get -d github.com/mholt/caddy/caddy && \
-    go get -d github.com/caddyserver/builds
-
 # checkout version?
-ENV CADDY_VERSION=$CADDY_VERSION
+ARG CADDY_VERSION=HEAD
 WORKDIR $GOPATH/src/github.com/mholt/caddy
-RUN git checkout -f $CADDY_VERSION
+RUN git clone https://github.com/mholt/caddy.git . && \
+    git checkout -f $CADDY_VERSION
+
+# FIXME
+RUN echo "replace github.com/h2non/gock => gopkg.in/h2non/gock.v1 v1.0.14" >> go.mod
 
 # disable telemetry
-WORKDIR $GOPATH/src/github.com/mholt/caddy/caddy/caddymain
-RUN sed -i -e 's|var EnableTelemetry.*|var EnableTelemetry = false|' run.go
+RUN sed -i -e 's|var EnableTelemetry.*|var EnableTelemetry = false|' ./caddy/caddymain/run.go
 
 # install caddy 3rd party plugins
 COPY plugins.sh /
-RUN /plugins.sh
+RUN /plugins.sh ./caddy/caddymain/run.go
 
-WORKDIR $GOPATH/src/github.com/mholt/caddy/caddy
 # force static build
-RUN sed -i -e 's|{"build", "-ldflags", ldflags}|{"build", "-a", "-tags", "netgo", "-ldflags", ldflags + " -w"}|' build.go
-RUN go run build.go && \
-    install -Dm00755 caddy /out/caddy
+RUN go build -a -tags "netgo" -ldflags "-s" -o /out/caddy ./caddy
 
 # get certs for deployment
 RUN apk add ca-certificates

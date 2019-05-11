@@ -2,6 +2,8 @@
 
 FROM docker.io/library/golang:1.12-alpine as build
 
+ENV GO111MODULE=on
+
 # get dependencies
 RUN apk add git && \
     go get -u arp242.net/goimport
@@ -12,6 +14,9 @@ WORKDIR $GOPATH/src/github.com/mholt/caddy
 RUN git clone https://github.com/mholt/caddy.git . && \
     git checkout -f $CADDY_VERSION
 
+# FIXME
+RUN echo "replace github.com/h2non/gock => gopkg.in/h2non/gock.v1 v1.0.14" >> go.mod
+
 # disable telemetry
 RUN sed -i -e 's|var EnableTelemetry.*|var EnableTelemetry = false|' ./caddy/caddymain/run.go
 
@@ -20,8 +25,7 @@ COPY plugins.sh /
 RUN /plugins.sh ./caddy/caddymain/run.go
 
 # force static build
-RUN go build -a -tags "netgo" -ldflags "-s -X main.AppName=caddy -X main.AppVersion=$CADDY_VERSION" && \
-    install -Dm00755 caddy /out/caddy
+RUN go build -a -tags "netgo" -ldflags "-s" -o /out/caddy ./caddy
 
 # get certs for deployment
 RUN apk add ca-certificates
