@@ -8,7 +8,7 @@ if [[ ! `uname -m` == "x86_64" ]]; then
 fi
 
 B=
-if [[ $B == "" && `command -v buildah` ]]; then
+if [[ `command -v buildah` ]]; then
     B="buildah bud"
 else
     echo "buildah not found, trying docker..."
