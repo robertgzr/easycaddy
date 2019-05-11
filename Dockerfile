@@ -1,20 +1,16 @@
 # vim: ft=dockerfile
-ARG CADDY_VERSION=HEAD
 
-FROM docker.io/library/golang:1.11-alpine as build
+FROM docker.io/library/golang:1.12-alpine as build
 
 # get dependencies
 RUN apk add git && \
     go get -u arp242.net/goimport
 
-# get sources
-RUN go get -d github.com/mholt/caddy/caddy && \
-    go get -d github.com/caddyserver/builds
-
 # checkout version?
-ENV CADDY_VERSION=$CADDY_VERSION
+ARG CADDY_VERSION=HEAD
 WORKDIR $GOPATH/src/github.com/mholt/caddy
-RUN git checkout -f $CADDY_VERSION
+RUN git clone https://github.com/mholt/caddy.git . && \
+    git checkout -f $CADDY_VERSION
 
 # disable telemetry
 WORKDIR $GOPATH/src/github.com/mholt/caddy/caddy/caddymain
@@ -26,8 +22,7 @@ RUN /plugins.sh
 
 WORKDIR $GOPATH/src/github.com/mholt/caddy/caddy
 # force static build
-RUN sed -i -e 's|{"build", "-ldflags", ldflags}|{"build", "-a", "-tags", "netgo", "-ldflags", ldflags + " -w"}|' build.go
-RUN go run build.go && \
+RUN go build -a -tags "netgo" -ldflags "-s -X main.AppName=caddy -X main.AppVersion=$CADDY_VERSION" && \
     install -Dm00755 caddy /out/caddy
 
 # get certs for deployment

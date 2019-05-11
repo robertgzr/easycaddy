@@ -1,7 +1,7 @@
 # vim: ft=dockerfile
 ARG CADDY_VERSION=HEAD
 
-FROM docker.io/balenalib/armv7hf-alpine-golang:1.11-run as build
+FROM docker.io/balenalib/armv7hf-alpine-golang:1.12-run as build
 
 RUN [ "cross-build-start" ]
 
