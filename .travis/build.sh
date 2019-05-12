@@ -2,22 +2,16 @@
 
 set -e
 
-ARCH="$1"
+ARCH=${1:-amd64}
 
 if [[ ! `uname -m` == "x86_64" ]]; then
-    echo "not building on x86_64, this won't work then..."
+    echo "not building on x86_64, then this won't work!"
     exit 1
 fi
 
-if [[ -z $ARCH ]]; then
-    echo "need to set a target architecture"
-    exit 1
-fi
 
-B=
-if [[ `command -v buildah` ]]; then
-    B="buildah bud"
-else
+B="buildah bud"
+if ! command -v buildah; then
     echo "buildah not found, trying docker..."
     if command -v docker; then
         B="docker build"
@@ -32,21 +26,20 @@ set -x
 case $ARCH in
 
     amd64)
-        TAG="${CADDY_VERSION}-amd64"
-        $B -t robertgzr/caddy:$TAG \
-            --file Dockerfile \
+        $B \
+            --tag=docker.io/$DOCKER_USERNAME/caddy:$CADDY_VERSION-$ARCH \
             --build-arg CADDY_VERSION=$CADDY_VERSION \
+            --build-arg GOOS=linux \
             --build-arg GOARCH=amd64 \
             .
         ;;
 
     armv7hf)
-        TAG="${CADDY_VERSION}-armv7hf"
-        $B -t robertgzr/caddy:$TAG \
-            --file Dockerfile.armv7hf \
+        $B \
+            --tag=docker.io/$DOCKER_USERNAME/caddy:$CADDY_VERSION-$ARCH \
             --build-arg CADDY_VERSION=$CADDY_VERSION \
+            --build-arg GOOS=linux \
             --build-arg GOARCH=arm --build-arg GOARM=7 \
             .
         ;;
-
 esac

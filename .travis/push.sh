@@ -1,9 +1,9 @@
 #!/bin/bash
 
-B=
-if [[ `command -v buildah` ]]; then
-    B="buildah"
-else
+set -e
+
+B="buildah"
+if ! command -v buildah; then
     echo "buildah not found, trying docker..."
     if command -v docker; then
         B="docker"
@@ -25,18 +25,13 @@ manifest_push() {
     $B push $ref-amd64
     $B push $ref-armv7hf
 
-    # can't use docker native manifest command
-    # docker manifest create --amend $1 $1-amd64 $1-armv7hf
-    # docker manifest annotate $1 $1-armv7hf --os linux --arch arm --variant v7
-    # docker manifest push $1
-
     # process and push spec
     sed -e "s|%%VERSION%%|$version|g" spec.template.yml > spec.yml
     ./manifest-tool push from-spec ./spec.yml
     rm spec.yml
 }
 
-echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+echo "$DOCKER_PASSWORD" | $B login -u "$DOCKER_USERNAME" --password-stdin
 
 BASE=docker.io/$DOCKER_USERNAME/caddy
 # push versioned img

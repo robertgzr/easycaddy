@@ -2,15 +2,20 @@
 
 FROM docker.io/library/golang:1.12-alpine as build
 
+ARG CADDY_VERSION=HEAD
+ARG GOOS=linux
+ARG GOARCH=amd64
+ARG GOARM
+
 ENV GO111MODULE=on
 
 # get dependencies
 RUN apk add git && \
     go get -u arp242.net/goimport
 
-# checkout version?
-ARG CADDY_VERSION=HEAD
 WORKDIR $GOPATH/src/github.com/mholt/caddy
+
+# checkout CADDY_VERSION
 RUN git clone https://github.com/mholt/caddy.git . && \
     git checkout -f $CADDY_VERSION
 
@@ -24,8 +29,19 @@ RUN sed -i -e 's|var EnableTelemetry.*|var EnableTelemetry = false|' ./caddy/cad
 COPY plugins.sh /
 RUN /plugins.sh ./caddy/caddymain/run.go
 
-# force static build
-RUN go build -a -tags "netgo" -ldflags "-s" -o /out/caddy ./caddy
+# set go toolchain env
+ENV GOOS=$GOOS \
+    GOARCH=$GOARCH \
+    GOARM=$GOARM \
+    CGO_ENABLED=0
+
+# static build
+# https://github.com/golang/go/issues/26492
+RUN go build -a \
+        -ldflags '-extldflags "-fno-PIC -static"' \
+        -tags "osusergo netgo static_build" \
+        -o /out/caddy \
+        ./caddy
 
 # get certs for deployment
 RUN apk add ca-certificates

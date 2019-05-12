@@ -14,7 +14,9 @@ includes the following plugins:
 * github.com/caddyserver/dnsproviders/cloudflare
 * github.com/techknowlogick/caddy-s3browser
 * github.com/hacdias/caddy-minify
-* github.com/abiosoft/caddy-git
+* ~~github.com/abiosoft/caddy-git~~ *doesn't work in a scratch container*
 * github.com/zikes/gopkg
 * github.com/captncraig/cors
 * github.com/nicolasazrak/caddy-cache
+
+to add more see the `plugins.sh` script
