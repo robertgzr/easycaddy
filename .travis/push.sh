@@ -13,11 +13,6 @@ if ! command -v buildah; then
     fi
 fi
 
-MANIFEST_TOOL_VERSION='v0.9.0'
-curl -sSfL https://github.com/estesp/manifest-tool/releases/download/$MANIFEST_TOOL_VERSION/manifest-tool-linux-amd64 \
-    -o manifest-tool
-chmod +x ./manifest-tool
-
 manifest_push() {
     local version=$2
     local ref=$1:$version
@@ -30,6 +25,13 @@ manifest_push() {
     ./manifest-tool push from-spec ./spec.yml
     rm spec.yml
 }
+
+set -x
+
+MANIFEST_TOOL_VERSION='v0.9.0'
+curl -sSfL https://github.com/estesp/manifest-tool/releases/download/$MANIFEST_TOOL_VERSION/manifest-tool-linux-amd64 \
+    -o manifest-tool
+chmod +x ./manifest-tool
 
 echo "$DOCKER_PASSWORD" | $B login -u "$DOCKER_USERNAME" --password-stdin
 
