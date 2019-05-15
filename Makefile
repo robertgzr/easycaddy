@@ -14,4 +14,7 @@ build.armv7hf:
 push:
 	env CADDY_VERSION=$(VERSION) .travis/push.sh
 
+webhook:
+	curl -X POST $(MB_WEBHOOK) # trigger mb refresh
+
 .PHONY: build build.amd64 build.armv7hf push
