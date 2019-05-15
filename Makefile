@@ -1,3 +1,4 @@
+# if you change this, also change the version in src/go.mod
 VERSION ?= v1.0.0
 
 all: push

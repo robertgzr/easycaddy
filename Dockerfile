@@ -1,34 +1,18 @@
 # vim: ft=dockerfile
-ARG CADDY_VERSION=HEAD
-ARG BUILD_DATE
-
 FROM docker.io/library/golang:1.12-alpine as build
 
 ENV GO111MODULE=on
 
 # get dependencies
-RUN apk add git && \
-    go get -u arp242.net/goimport
-
-WORKDIR $GOPATH/src/github.com/mholt/caddy
-
-# checkout CADDY_VERSION
-RUN git clone https://github.com/mholt/caddy.git . && \
-    git checkout -f $CADDY_VERSION
-
-# FIXME
-RUN echo "replace github.com/h2non/gock => gopkg.in/h2non/gock.v1 v1.0.14" >> go.mod
-
-# disable telemetry
-RUN sed -i -e 's|var EnableTelemetry.*|var EnableTelemetry = false|' ./caddy/caddymain/run.go
-
-# install caddy 3rd party plugins
-COPY plugins.sh /
-RUN /plugins.sh ./caddy/caddymain/run.go
+RUN apk add ca-certificates git
 
 ARG GOOS=linux
 ARG GOARCH=amd64
 ARG GOARM
+
+COPY ./src /go/src
+
+WORKDIR /go/src
 
 # set go toolchain env
 ENV GOOS=$GOOS \
@@ -41,15 +25,13 @@ ENV GOOS=$GOOS \
 RUN go build -a \
         -ldflags '-extldflags "-fno-PIC -static"' \
         -tags "osusergo netgo static_build" \
-        -o /out/caddy \
-        ./caddy
-
-# get certs for deployment
-RUN apk add ca-certificates
-
+        -o /out/caddy .
 
 # put binary and certs into scratch container
 FROM scratch
+
+ARG BUILD_DATE
+ARG CADDY_VERSION
 
 LABEL \
     maintainer="robertgzr <r@gnzler.io>" \
