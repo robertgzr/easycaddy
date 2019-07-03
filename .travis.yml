@@ -4,10 +4,14 @@ services:
   - docker
 
 script:
-  - make -j 2 build.amd64 build.armv7hf
+  - make -j 3 BUILD='docker build' build
+
+before_deploy:
+  - echo "$DOCKER_PASSWORD" | $B login -u "$DOCKER_USERNAME" --password-stdin
+  - curl -sSfL https://github.com/estesp/manifest-tool/releases/download/v0.9.0/manifest-tool-linux-amd64 -o /usr/loca/bin/manifest-tool && chmod +x /usr/local/bin/manifest-tool
 
 deploy:
   provider: script
-  script: make push webhook
+  script: make PUSH='docker push' push webhook
   on:
     branch: master

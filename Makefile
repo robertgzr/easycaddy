@@ -1,20 +1,16 @@
-# if you change this, also change the version in src/go.mod
-VERSION ?= v1.0.0
+include easymanifests.mk
 
-all: push
+REPO  = docker.io/robertgzr/caddy
+ARCHS = amd64 armv7hf aarch64
+VERSION = v1.0.1
 
-build: build.amd64 build.armv7hf
-
-build.amd64:
-	env CADDY_VERSION=$(VERSION) .travis/build.sh amd64
-
-build.armv7hf:
-	env CADDY_VERSION=$(VERSION) .travis/build.sh armv7hf
-
-push:
-	env CADDY_VERSION=$(VERSION) .travis/push.sh
+build.armv7hf: pre.armv7hf
+pre.armv7:
+	$(eval GOARM=7)
+build.aarch64: pre.aarch64
+pre.aarch64:
+	$(eval GOARCH=arm64)
 
 webhook:
 	curl -X POST $(MB_WEBHOOK) # trigger mb refresh
 
-.PHONY: build build.amd64 build.armv7hf push

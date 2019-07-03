@@ -1,7 +1,7 @@
 package main // import "github.com/robertgzr/docker-caddy"
 
 import (
-	"github.com/mholt/caddy/caddy/caddymain"
+	"github.com/caddyserver/caddy/caddy/caddymain"
 
 	_ "github.com/caddyserver/dnsproviders/cloudflare"
 	_ "github.com/caddyserver/forwardproxy"
