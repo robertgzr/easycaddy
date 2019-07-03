@@ -2,11 +2,11 @@
 
 set -e
 
-B="buildah"
+B="buildah bud"
 if ! command -v buildah; then
     echo "buildah not found, trying docker..."
     if command -v docker; then
-        B="docker"
+        B="docker build"
     else
         echo "docker not found, then this won't work..."
         exit 1
