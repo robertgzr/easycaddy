@@ -6,16 +6,12 @@ sources:
 secrets:
   - 9e73c7db-bf27-4921-a0fa-6a706c85f2cd
 tasks:
-  - setup: |
-      mkdir -p ~/bin
-      curl -sSfL "https://github.com/estesp/manifest-tool/releases/download/v0.9.0/manifest-tool-linux-amd64" -o ~/bin/manifest-tool
-      chmod u+x ~/bin/manifest-tool
-      export PATH=~/bin:$PATH
   - build: |
-      make -j 3 build
+      cd easycaddy
+      ./make.sh build
   - deploy: |
+      cd easycaddy
       du=`cat ~/.dockercreds | cut -d\: -f1`
       dp=`cat ~/.dockercreds | cut -d\: -f2`
-      echo $dp | buildah login --username $du --password-stdin
-      make push
-      # make webhook
+      echo $dp | buildah login --username $du --password-stdin docker.io
+      ./make.sh push # webhook
