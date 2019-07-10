@@ -47,6 +47,7 @@ LABEL \
 
 COPY --from=build /out/caddy /bin/caddy
 COPY Caddyfile.default /etc/Caddyfile
+COPY templates /share/caddy
 
 # add certs from build to enable HTTPS
 COPY --from=build \
