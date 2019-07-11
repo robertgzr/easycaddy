@@ -4,14 +4,12 @@ packages:
 sources:
   - https://git.sr.ht/~robertgzr/easycaddy
 secrets:
-  - 9e73c7db-bf27-4921-a0fa-6a706c85f2cd
+  - 299776af-3511-4b6c-8539-ac256471dcb0
 tasks:
   - build: |
       cd easycaddy
       ./make.sh build
   - deploy: |
       cd easycaddy
-      du=`cat ~/.dockercreds | cut -d\: -f1`
-      dp=`cat ~/.dockercreds | cut -d\: -f2`
-      echo $dp | buildah login --username $du --password-stdin docker.io
+      cat ~/.dockercreds | buildah login --username robertgzr --password-stdin docker.io
       ./make.sh push # webhook
