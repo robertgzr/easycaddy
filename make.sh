@@ -3,15 +3,13 @@
 set -e
 [ -n "$DEBUG" ] && set -x
 
-REPO="docker.io/robertgzr/caddy"
-ARCHS="amd64 armv7hf aarch64"
-VERSION="v1.0.1"
-
-DOCKERFILE="Dockerfile"
-BUILD="buildah bud"
-PUSH="buildah push"
-BUILD_DATE=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-OS="linux"
+REPO=${REPO:-"docker.io/robertgzr/caddy"}
+ARCHS=${ARCHS:-"amd64 armv7hf aarch64"}
+VERSION=${VERSION:-"v1.0.1"}
+DOCKERFILE=${DOCKERFILE:-"Dockerfile"}
+BUILD=${BUILD:-"buildah bud"}
+PUSH=${PUSH:-"buildah push"}
+OS=${OS:-"linux"}
 
 _info() {
     echo -e "\033[1;34m" "> $1" "\033[0m"
@@ -25,11 +23,12 @@ _do() {
 _build() {
     arch="$1"
     tag="${REPO}:${VERSION}-${arch}"
+    build_date=$(date -u +%Y-%m-%dT%H:%M:%SZ)
     _info "building container image for ${arch}"
     _do ${BUILD} \
 	--file=${DOCKERFILE} \
 	--tag=${tag} \
-	--build-arg BUILD_DATE=${BUILD_DATE} \
+	--build-arg BUILD_DATE=${build_date} \
 	--build-arg VERSION=${VERSION} \
 	--build-arg GOOS=${GOOS} \
 	--build-arg GOARCH=${GOARCH} \
