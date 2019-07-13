@@ -33,13 +33,16 @@ RUN set -e;\
 
 # put binary and certs into scratch container
 FROM scratch
+# or alpine
+# FROM alpine:3.10
 
 ARG BUILD_DATE
 ARG VERSION
 
 LABEL \
     maintainer="robertgzr <r@gnzler.io>" \
-    RUN="podman run --name some-caddy -p 80:2015 -dt IMAGE" \
+    RUN="podman run --name caddy -p 80:2015 -v .:/var/www:ro -dt IMAGE" \
+    SRV="podman run --name caddy -p 2015:2015 -v .:/var/www:ro -dt IMAGE -conf /etc/caddy/browse.conf" \
     org.label-schema.schema-version="1.0" \
     org.label-schema.version=$VERSION \
     org.label-schema.build-date=$BUILD_DATE \
