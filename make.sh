@@ -56,12 +56,14 @@ while test $# -gt 0; do
     case "$1" in
 	build)
 	    export GOOS=${OS}
-	    for arch in ${ARCHS}; do
+	    for arch in ${2:-$ARCHS}; do
 		unset GOARCH; unset GOARM;
 		case "$arch" in
 		    amd64)   export GOARCH="amd64" ;;
 		    armv7hf) export GOARCH="arm"; export GOARM="7" ;;
 		    aarch64) export GOARCH="arm64" ;;
+		    *) 	echo "not one of: $ARCHS"
+			exit 1 ;;
 		esac
 		_build $arch
 	    done
@@ -69,7 +71,7 @@ while test $# -gt 0; do
 
 	push)
 	    _check_and_download_manifest_tool
-	    for arch in ${ARCHS}; do
+	    for arch in ${2:-$ARCHS}; do
 		_push $arch
 	    done
 	    _info "pushing manifest"
