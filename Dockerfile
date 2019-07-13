@@ -45,9 +45,9 @@ LABEL \
     org.label-schema.build-date=$BUILD_DATE \
     org.label-schema.vcs-url="https://github.com/robertgzr/docker-caddy"
 
-COPY --from=build /out/caddy /bin/caddy
-COPY Caddyfile.default /etc/Caddyfile
-COPY templates /share/caddy
+COPY --from=build /out/caddy /usr/bin/caddy
+COPY conf /etc/caddy
+COPY templates /share/caddy/templates
 
 # add certs from build to enable HTTPS
 COPY --from=build \
@@ -56,5 +56,5 @@ COPY --from=build \
 
 EXPOSE 2015
 WORKDIR /var/www
-ENTRYPOINT ["/bin/caddy"]
-CMD ["-agree", "-conf", "/etc/Caddyfile"]
+ENTRYPOINT ["/usr/bin/caddy"]
+CMD ["-agree", "-conf", "/etc/caddy/caddy.conf"]
