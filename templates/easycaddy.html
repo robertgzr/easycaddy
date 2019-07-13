@@ -10,7 +10,7 @@
 <style>
 * { padding: 0; margin: 0; }
 body {
-	font-family: sans-serif;
+	font-family: monospace;
 	text-rendering: optimizespeed;
 	background-color: #ffffff;
 }
@@ -24,16 +24,16 @@ h1 a:hover {
 }
 header,
 #summary {
-	padding-left: 5%;
-	padding-right: 5%;
+	padding-left: 2%;
+	padding-right: 2%;
 }
 th:first-child,
 td:first-child {
-	width: 5%;
+	width: 2%;
 }
 th:last-child,
 td:last-child {
-	width: 5%;
+	width: 2%;
 }
 header {
 	padding-top: 25px;
@@ -41,7 +41,7 @@ header {
 	background-color: #f2f2f2;
 }
 h1 {
-	font-size: 20px;
+	font-size: 16px;
 	font-weight: normal;
 	white-space: nowrap;
 	overflow-x: hidden;
@@ -78,6 +78,7 @@ main {
 table {
 	width: 100%;
 	border-collapse: collapse;
+	font-size: 14px;
 }
 tr {
 	border-bottom: 1px dashed #dadada;
@@ -93,7 +94,6 @@ td {
 th {
 	padding-top: 15px;
 	padding-bottom: 15px;
-	font-size: 16px;
 	white-space: nowrap;
 }
 th a {
@@ -104,7 +104,6 @@ th svg {
 }
 td {
 	white-space: nowrap;
-	font-size: 14px;
 }
 td:nth-child(2) {
 	width: 80%;
@@ -281,7 +280,7 @@ footer {
 						<td></td>
 						<td>
 							<a href="..">
-								<span class="goup">Go up</span>
+								<span class="goup">go up</span>
 							</a>
 						</td>
 						<td>&mdash;</td>
@@ -316,7 +315,7 @@ footer {
 			</div>
 		</main>
 		<footer>
-			Generated with <a rel="noopener noreferrer" href="https://caddyserver.com">Caddy</a> and <a rel="noopener noreferrer" href="https://github.com/robertgzr/caddygen">caddygen</a>
+			Served with <a rel="noopener noreferrer" href="https://github.com/caddyserver/caddy">Caddy</a>
 		</footer>
 		<script>
 			var filterEl = document.getElementById('filter');
@@ -348,7 +347,7 @@ footer {
 						return;
 					}
 				}
-				e.textContent = d.toLocaleString([], {day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit"});
+				e.textContent = d.toISOString();
 			}
 			var timeList = Array.prototype.slice.call(document.getElementsByTagName("time"));
 			timeList.forEach(localizeDatetime);
