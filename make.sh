@@ -39,10 +39,10 @@ _build() {
 _check_and_download_manifest_tool() {
     mt_url="https://github.com/estesp/manifest-tool/releases/download/v0.9.0/manifest-tool-linux-amd64"
     _info "checking if manifest-tool is available"
-    _do which manifest-tool && return
+    which manifest-tool && return
     _info "installing manifest-tool"
     _do curl -sSfL "${mt_url}" -o ./manifest-tool
-    _do chmod u+x ./manifest-tool
+    chmod u+x ./manifest-tool
 }
 
 _push() {
@@ -80,12 +80,12 @@ while test $# -gt 0; do
 		    -e "s|{%VERSION%}|${VERSION}|g" \
 		    -e "s|{%REPO%}|${REPO}|g" \
 		    spec.template.yml > spec.yml
-	    _do ./manifest-tool push from-spec ./spec.yml
+	    ./manifest-tool --username=${DOCKER_USERNAME} --password=${DOCKER_PASSWORD} push from-spec ./spec.yml
 	    ;;
 
 	webhook)
 	    _info "triggering microbadger refresh"
-	    _do curl -X POST ${MB_WEBHOOK}
+	    curl -X POST ${MB_WEBHOOK}
 	    ;;
     esac
     shift
