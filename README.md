@@ -42,8 +42,6 @@ $ podman run \
 Use podman's `container runlabel` command to run commands embedded in the image
 
 ```
-$ podman container runlabel --display srv docker.io/robertgzr/caddy
-command: podman run --name caddy -p 2015:2015 -v .:/var/www:ro -dt docker.io/robertgzr/caddy -conf /etc/caddy/browse.conf
 $ podman container runlabel srv docker.io/robertgzr/caddy
 Activating privacy features... done.
 
@@ -51,6 +49,13 @@ Serving HTTP on port 2015
 http://:2015
 ```
 
+## building
+
+after modifying the target binary by editing [src/main.go](src/main.go), run the following commands:
+
+```
+$ REPO=you/my_caddy ./make.sh build <amd64|aarch64|armv7hf>  # to build the container
+```
 
 ---
 
