@@ -8,12 +8,13 @@ secrets:
 tasks:
   - build: |
       cd easycaddy
-      ./make.sh build
+      sudo ./make.sh build
   - deploy: |
       . ~/.easycaddy_secrets
       set +x
-      buildah login --username ${DOCKER_USERNAME} --password ${DOCKER_PASSWORD} docker.io
+      sudo buildah login --username ${DOCKER_USERNAME} --password ${DOCKER_PASSWORD} docker.io
       set -x
       cd easycaddy
-      ./make.sh push
+      sudo ./make.sh push
       ./make.sh webhook
+      ./make.sh upload

@@ -7,8 +7,6 @@ REPO=${REPO:-"docker.io/robertgzr/caddy"}
 ARCHS=${ARCHS:-"amd64 armv7hf aarch64"}
 VERSION=${VERSION:-"v1.0.1"}
 DOCKERFILE=${DOCKERFILE:-"Dockerfile"}
-BUILD=${BUILD:-"buildah bud"}
-PUSH=${PUSH:-"buildah push"}
 OS=${OS:-"linux"}
 
 _info() {
@@ -24,8 +22,11 @@ _build() {
     arch="$1"
     tag="${REPO}:${VERSION}-${arch}"
     build_date=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+    mkdir -p ${PWD}/output
+    trap '{ rm -f ./latest_image ./latest_container; }' EXIT
+
     _info "building container image for ${arch}"
-    _do ${BUILD} \
+    _do buildah bud \
 	--file=${DOCKERFILE} \
 	--tag=${tag} \
 	--build-arg BUILD_DATE=${build_date} \
@@ -33,7 +34,14 @@ _build() {
 	--build-arg GOOS=${GOOS} \
 	--build-arg GOARCH=${GOARCH} \
 	--build-arg GOARM=${GOARM} \
+	--iidfile ./latest_image \
 	.
+
+    buildah from --cidfile ./latest_container `cat ./latest_image`
+    cid=`cat ./latest_container`
+    mountpath=`buildah mount ${cid}`
+    mv ${mountpath}/usr/bin/caddy ./output/caddy-${VERSION}-${arch}
+    buildah umount ${cid}
 }
 
 _check_and_download_manifest_tool() {
@@ -49,9 +57,9 @@ _push() {
     arch="$1"
     tag_version="${REPO}:${VERSION}-${arch}"
     _info "pushing container image for ${arch}"
-    _do ${PUSH} ${tag_version}
+    _do buildah push ${tag_version}
     tag_latest="${REPO}:latest-${arch}"
-    _do ${PUSH} ${tag_latest}
+    _do buildah push ${tag_latest}
 }
 
 while test $# -gt 0; do
@@ -92,12 +100,18 @@ while test $# -gt 0; do
 	    curl -X POST ${MB_WEBHOOK}
 	    ;;
 
+	upload)
+	    _info "uploading artifacts"
+	    ls -la ./output/
+	    ;;
+
 	-h|--help|help)
 	    echo "usage: make.sh <command>"
 	    echo ""
 	    echo " build"
 	    echo " push"
 	    echo " webhook"
+	    echo " upload"
 	    echo ""
 	    ;;
     esac
