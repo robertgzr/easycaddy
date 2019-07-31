@@ -16,7 +16,9 @@ require (
 	github.com/miekg/caddy-prometheus v0.0.0-20190709133612-1fe4cb19becd
 	github.com/nicolasazrak/caddy-cache v0.3.2
 	github.com/pquerna/cachecontrol v0.0.0-20180517163645-1555304b9b35 // indirect
+	github.com/pyed/ipfilter v1.1.4
 	github.com/techknowlogick/caddy-s3browser v0.0.0-20190511002423-f5b0250763e1
+	github.com/xuqingfeng/caddy-rate-limit v1.6.4
 	github.com/zikes/gopkg v1.0.1
 )
 

@@ -13,7 +13,9 @@ import (
 	_ "github.com/jung-kurt/caddy-cgi"
 	_ "github.com/miekg/caddy-prometheus"
 	_ "github.com/nicolasazrak/caddy-cache"
+	_ "github.com/pyed/ipfilter"
 	_ "github.com/techknowlogick/caddy-s3browser"
+	_ "github.com/xuqingfeng/caddy-rate-limit"
 	_ "github.com/zikes/gopkg"
 )
 

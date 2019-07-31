@@ -10,18 +10,20 @@ multi-arch image* supporting:
 
 includes the following plugins:
 
-* "github.com/caddyserver/dnsproviders/cloudflare"
-* "github.com/caddyserver/forwardproxy"
-* "github.com/captncraig/cors"
-* "github.com/dhaavi/caddy-permission"
-* "github.com/emersion/caddy-wkd"
-* "github.com/epicagency/caddy-expires"
-* "github.com/hacdias/caddy-minify"
-* "github.com/jung-kurt/caddy-cgi"
-* "github.com/miekg/caddy-prometheus"
-* "github.com/nicolasazrak/caddy-cache"
-* "github.com/techknowlogick/caddy-s3browser"
-* "github.com/zikes/gopkg"
+* github.com/caddyserver/dnsproviders/cloudflare
+* github.com/caddyserver/forwardproxy
+* github.com/captncraig/cors
+* github.com/dhaavi/caddy-permission
+* github.com/emersion/caddy-wkd
+* github.com/epicagency/caddy-expires
+* github.com/hacdias/caddy-minify
+* github.com/jung-kurt/caddy-cgi
+* github.com/miekg/caddy-prometheus
+* github.com/nicolasazrak/caddy-cache
+* github.com/pyed/ipfilter
+* github.com/techknowlogick/caddy-s3browser
+* github.com/xuqingfeng/caddy-rate-limit
+* github.com/zikes/gopkg
 
 to add more simply import them [here](src/main.go)
 
