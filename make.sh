@@ -24,7 +24,7 @@ _build() {
     build_date=$(date -u +%Y-%m-%dT%H:%M:%SZ)
     trap '{ rm -f ./latest_image ./latest_container; }' EXIT
 
-    _info "building container image for ${arch}"
+    _info "[${arch}] building container image"
     _do buildah bud \
 	--file=${DOCKERFILE} \
 	--tag=${tag} \
@@ -36,7 +36,10 @@ _build() {
 	--iidfile ./latest_image \
 	.
 
+    _info "[${arch}] tagging latest image"
     _do buildah tag ${tag} "${REPO}:latest-${arch}"
+
+    _info "[${arch}] extracting binary"
     buildah from --cidfile ./latest_container `cat ./latest_image`
     cid=`cat ./latest_container`
     mountpath=`buildah mount ${cid}`
@@ -56,7 +59,7 @@ _check_and_download_manifest_tool() {
 _push() {
     arch="$1"
     tag_version="${REPO}:${VERSION}-${arch}"
-    _info "pushing container image for ${arch}"
+    _info "[${arch}] pushing container images"
     _do buildah push ${tag_version}
     tag_latest="${REPO}:latest-${arch}"
     _do buildah push ${tag_latest}
