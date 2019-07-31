@@ -22,7 +22,6 @@ _build() {
     arch="$1"
     tag="${REPO}:${VERSION}-${arch}"
     build_date=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-    mkdir -p ${PWD}/output
     trap '{ rm -f ./latest_image ./latest_container; }' EXIT
 
     _info "building container image for ${arch}"
@@ -37,10 +36,11 @@ _build() {
 	--iidfile ./latest_image \
 	.
 
+    _do buildah tag ${tag} "${REPO}:latest-${arch}"
     buildah from --cidfile ./latest_container `cat ./latest_image`
     cid=`cat ./latest_container`
     mountpath=`buildah mount ${cid}`
-    mv ${mountpath}/usr/bin/caddy ./output/caddy-${VERSION}-${arch}
+    install -Dm0755 ${mountpath}/usr/bin/caddy ./output/caddy-${VERSION}-${arch}
     buildah umount ${cid}
 }
 
