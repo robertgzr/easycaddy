@@ -87,14 +87,14 @@ while test $# -gt 0; do
 	    for arch in ${2:-$ARCHS}; do
 		_push $arch
 	    done
-	    for ver in "${VERSION} latest"; do
+	    for ver in ${VERSION} latest; do
 		_info "pushing manifest for ${ver}"
 		trap "{ rm -f spec-${ver}.yml; }" EXIT
 		sed \
 			-e "s|{%VERSION%}|${ver}|g" \
 			-e "s|{%REPO%}|${REPO}|g" \
 			spec.template.yml > spec-${ver}.yml
-		./manifest-tool --username=${DOCKER_USERNAME} --password=${DOCKER_PASSWORD} push from-spec ./spec-${ver}.yml
+		_do ./manifest-tool --username=${DOCKER_USERNAME} --password=${DOCKER_PASSWORD} push from-spec ./spec-${ver}.yml
 	    done
 	    ;;
 
