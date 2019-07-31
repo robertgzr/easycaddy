@@ -91,6 +91,15 @@ while test $# -gt 0; do
 	    _info "triggering microbadger refresh"
 	    curl -X POST ${MB_WEBHOOK}
 	    ;;
+
+	-h|--help|help)
+	    echo "usage: make.sh <command>"
+	    echo ""
+	    echo " build"
+	    echo " push"
+	    echo " webhook"
+	    echo ""
+	    ;;
     esac
     shift
 done
