@@ -47,9 +47,11 @@ _check_and_download_manifest_tool() {
 
 _push() {
     arch="$1"
-    tag="${REPO}:${VERSION}-${arch}"
+    tag_version="${REPO}:${VERSION}-${arch}"
     _info "pushing container image for ${arch}"
-    _do ${PUSH} ${tag}
+    _do ${PUSH} ${tag_version}
+    tag_latest="${REPO}:latest-${arch}"
+    _do ${PUSH} ${tag_latest}
 }
 
 while test $# -gt 0; do
@@ -74,13 +76,15 @@ while test $# -gt 0; do
 	    for arch in ${2:-$ARCHS}; do
 		_push $arch
 	    done
-	    _info "pushing manifest"
-	    trap '{ rm -f spec.yml; }' EXIT
-	    sed \
-		    -e "s|{%VERSION%}|${VERSION}|g" \
-		    -e "s|{%REPO%}|${REPO}|g" \
-		    spec.template.yml > spec.yml
-	    ./manifest-tool --username=${DOCKER_USERNAME} --password=${DOCKER_PASSWORD} push from-spec ./spec.yml
+	    for ver in "${VERSION} latest"; do
+		_info "pushing manifest for ${ver}"
+		trap "{ rm -f spec-${ver}.yml; }" EXIT
+		sed \
+			-e "s|{%VERSION%}|${ver}|g" \
+			-e "s|{%REPO%}|${REPO}|g" \
+			spec.template.yml > spec-${ver}.yml
+		./manifest-tool --username=${DOCKER_USERNAME} --password=${DOCKER_PASSWORD} push from-spec ./spec-${ver}.yml
+	    done
 	    ;;
 
 	webhook)
