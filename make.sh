@@ -22,7 +22,7 @@ _build() {
     arch="$1"
     tag="${REPO}:${VERSION}-${arch}"
     build_date=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-    trap '{ rm -f ./latest_image ./latest_container; }' EXIT
+    trap '{ rm -f ./latest_image ./latest_container; }' RETURN
 
     _info "[${arch}] building container image"
     _do buildah bud \
@@ -65,6 +65,19 @@ _push() {
     _do buildah push ${tag_latest}
 }
 
+_push_manifest() {
+    trap "{ rm -f spec-${ver}.yml; }" RETURN
+    sed \
+	    -e "s|{%VERSION%}|${ver}|g" \
+	    -e "s|{%REPO%}|${REPO}|g" \
+	    spec.template.yml > spec-${ver}.yml
+
+    # do this manually instead of via _do since we would expose docker creds to build
+    echo "./manifest-tool push from-spec ./spec-${ver}.yml"
+    [ -n "$DRY" ] && return
+    ./manifest-tool --username=${DOCKER_USERNAME} --password=${DOCKER_PASSWORD} push from-spec ./spec-${ver}.yml
+}
+
 while test $# -gt 0; do
     case "$1" in
 	build)
@@ -88,13 +101,7 @@ while test $# -gt 0; do
 		_push $arch
 	    done
 	    for ver in ${VERSION} latest; do
-		_info "pushing manifest for ${ver}"
-		trap "{ rm -f spec-${ver}.yml; }" EXIT
-		sed \
-			-e "s|{%VERSION%}|${ver}|g" \
-			-e "s|{%REPO%}|${REPO}|g" \
-			spec.template.yml > spec-${ver}.yml
-		_do ./manifest-tool --username=${DOCKER_USERNAME} --password=${DOCKER_PASSWORD} push from-spec ./spec-${ver}.yml
+		_push_manifest $ver
 	    done
 	    ;;
 
