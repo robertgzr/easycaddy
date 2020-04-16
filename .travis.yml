@@ -4,13 +4,5 @@ services:
   - docker
 
 script:
-  - BUILD='docker build' ./make.sh build
-
-before_deploy:
-  - echo "$DOCKER_PASSWORD" | $B login -u "$DOCKER_USERNAME" --password-stdin docker.io
-
-deploy:
-  provider: script
-  script: PUSH='docker push' ./make.sh push webhook
-  on:
-    branch: master
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin docker.io
+  - make container-multiarch

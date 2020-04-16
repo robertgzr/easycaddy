@@ -1,20 +1,18 @@
-image: 'fedora/30'
+image: 'alpine/latest'
 packages:
-  - buildah
+  - docker
+  - make
 sources:
   - https://git.sr.ht/~robertgzr/easycaddy
 secrets:
   - 985dd57c-ae11-46ee-9419-45ff06078c19
 tasks:
-  - build: |
-      cd easycaddy
-      sudo ./make.sh build
-  - deploy: |
+  - prepare: |
+      rc-service docker start
+  - do: |
       . ~/.easycaddy_secrets
       set +x
-      sudo buildah login --username ${DOCKER_USERNAME} --password ${DOCKER_PASSWORD} docker.io
+      sudo docker login --username ${DOCKER_USERNAME} --password ${DOCKER_PASSWORD} docker.io
       set -x
       cd easycaddy
-      sudo ./make.sh push
-      ./make.sh webhook
-      ./make.sh upload
+      sudo make container-multiarch
