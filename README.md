@@ -64,4 +64,4 @@ $ REPO=you/my_caddy ./make.sh build <amd64|aarch64|armv7hf>  # to build the cont
 
 ---
 
-\* thanks to [manifest-tool](https://github.com/estesp/manifest-tool)
+\* thanks to [buildkit](https://github.com/moby/buildkit)
