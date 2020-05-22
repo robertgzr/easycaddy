@@ -4,7 +4,7 @@ import (
 	caddycmd "github.com/caddyserver/caddy/v2/cmd"
 
 	_ "github.com/caddyserver/caddy/v2/modules/standard"
-
+	_ "github.com/hairyhenderson/caddyprom"
 	// _ "github.com/caddyserver/dnsproviders/cloudflare"
 	// _ "github.com/caddyserver/forwardproxy"
 	// _ "github.com/captncraig/cors"

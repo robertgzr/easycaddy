@@ -1,7 +1,7 @@
 DOCKER ?= docker
 
 PLATFORM ?= linux/amd64
-VERSION ?= 2.0.0-rc.3
+VERSION ?= 2.0.0
 BUILD_DATE ?= $(shell date -u +%Y-%m-%dT%H:%M:%SZ)
 REPO ?= docker.io/robertgzr/caddy
 TAG ?= $(VERSION)
