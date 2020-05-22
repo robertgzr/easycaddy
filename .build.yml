@@ -1,18 +1,35 @@
-image: 'alpine/latest'
+image: 'alpine/edge'
 packages:
   - docker
   - make
+  - shadow
 sources:
   - https://git.sr.ht/~robertgzr/easycaddy
 secrets:
-  - 985dd57c-ae11-46ee-9419-45ff06078c19
+  - 2d6aca50-e111-4946-9054-2d27975f1f48 # docker env
 tasks:
   - prepare: |
-      rc-service docker start
+      un=$(id -un); gn=$(id -gn);
+      sudo sh -s <<EOF
+        set -e
+        echo "$un:100000:65536" >> /etc/subuid
+        echo "$gn:100000:65536" >> /etc/subgid
+        mount -t tmpfs -o size=2g /dev/null /dev/shm
+        mount -t cgroup cgroup /sys/fs/cgroup
+        mkdir -p /run/runc
+        chown $un:$gn -R /run/runc
+        usermod -a -G docker $un
+      EOF
+  - install: |
+      sudo nohup dockerd --experimental &
+      while true; do [ -n "$(docker version -f "{{ .Server.Version }}" 2>/dev/null)" ] && break; sleep 2; done
+      docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+      docker run --rm --privileged -d --name buildkitd moby/buildkit:latest
+      sudo docker cp buildkitd:/usr/bin/buildctl /usr/local/bin
+      echo "PATH=$PATH:/usr/local/bin" >> ~/.buildenv
+      echo "BUILDKIT_HOST=docker-container://buildkitd" >> ~/.buildenv
   - do: |
-      . ~/.easycaddy_secrets
-      set +x
-      sudo docker login --username ${DOCKER_USERNAME} --password ${DOCKER_PASSWORD} docker.io
-      set -x
+      docker login -u "${DOCKER_USER}" --password-stdin <<< "${DOCKER_PASSWD}"
       cd easycaddy
-      sudo make container-multiarch
+      export BUILDKIT_HOST;
+      make container-buildkit
