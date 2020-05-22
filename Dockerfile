@@ -45,7 +45,7 @@ FROM scratch AS run
 ARG VERSION
 ARG BUILD_DATE
 ARG MAINTAINER="robertgzr <r@gnzler.io>"
-ARG VCS_URL="https://github.com/robertgzr/docker-caddy"
+ARG VCS_URL="https://git.sr.ht/~robertgzr/easycaddy"
 LABEL \
     maintainer=$MAINTAINER \
     RUN="podman run --name caddy -p 80:2015 -v .:/var/www:ro -dt IMAGE" \
