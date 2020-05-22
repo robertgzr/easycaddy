@@ -1,6 +1,7 @@
 # [easycaddy](https://hub.docker.com/r/robertgzr/caddy)
 
-[![builds.sr.ht status](https://builds.sr.ht/~robertgzr/easycaddy/.build.yml.svg)](https://builds.sr.ht/~robertgzr/easycaddy/.build.yml?) [![Travis](https://img.shields.io/travis/robertgzr/docker-caddy/master.svg?label=travis)](https://travis-ci.org/robertgzr/docker-caddy.svg?branch=master) [![Microbadger](https://images.microbadger.com/badges/image/robertgzr/caddy.svg)](https://microbadger.com/images/robertgzr/caddy "Get your own image badge on microbadger.com")
+[![builds.sr.ht status](https://builds.sr.ht/~robertgzr/easycaddy/.build.yml.svg)](https://builds.sr.ht/~robertgzr/easycaddy/.build.yml?)
+[![Microbadger](https://images.microbadger.com/badges/image/robertgzr/caddy.svg)](https://microbadger.com/images/robertgzr/caddy "Get your own image badge on microbadger.com")
 
 multi-arch image* supporting:
 
